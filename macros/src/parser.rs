@@ -8,7 +8,6 @@ use syn::{
 pub mod kw {
   use syn::custom_keyword;
 
-  custom_keyword!(field);
   custom_keyword!(bits);
 }
 pub struct MixedRadixInfo {
@@ -34,7 +33,9 @@ impl ToTokens for MixedRadixInfo {
       let vis = &x.vis;
       let name = &x.name;
       let ty = &x.re_type;
+      let attr = &x.attr;
       quote! {
+        #(#attr)*
         #vis #name: #ty
       }
     });
@@ -144,6 +145,7 @@ impl ToTokens for MixedRadixInfo {
 impl Parse for MixedRadixInfo {
   fn parse(input: syn::parse::ParseStream) -> syn::Result<Self> {
     let mut attrs = input.call(Attribute::parse_outer)?;
+    attrs.extend(input.call(Attribute::parse_inner)?);
 
     let vis = input.parse::<Visibility>()?;
     input.parse::<Token![struct]>()?;
@@ -238,6 +240,7 @@ impl Parse for MixedRadixInfo {
 
 pub struct RadixField {
   vis: Visibility,
+  attr: Vec<Attribute>,
   name: Ident,
   states: u128,
   re_type: TokenStream,
@@ -245,9 +248,10 @@ pub struct RadixField {
 
 impl Parse for RadixField {
   fn parse(input: syn::parse::ParseStream) -> syn::Result<Self> {
-    let vis = input.parse::<Visibility>()?;
+    let mut attr = input.call(Attribute::parse_outer)?;
+    attr.extend(input.call(Attribute::parse_inner)?);
 
-    input.parse::<kw::field>()?;
+    let vis = input.parse::<Visibility>()?;
 
     let name = input.parse::<Ident>()?;
     input.parse::<Token![:]>()?;
@@ -276,6 +280,7 @@ impl Parse for RadixField {
     };
 
     Ok(Self {
+      attr,
       vis,
       name,
       states,

@@ -48,9 +48,14 @@ where
 #[cfg(feature = "serde")]
 #[cfg_attr(docsrs, doc(cfg(feature = "serde")))]
 #[repr(transparent)]
-/// This structure implements [serde::Serialize] for anything that implements [MixedRadixStructure]
+/// This transparent structure implements [serde::Serialize] for anything that implements [MixedRadixStructure]
 ///
-/// Usage in struct
+/// ## Why not directly apply Serialize to the structure
+///
+/// 1. The main reason is that rust does not allow this level of blanket trait implementation and that it is bad for the macro parser to add thousands of #[cfg_attr(...)] blocks.
+/// 2. Another reason is that sometimes you do want the `MyStructure` to have a different `Serialize` type than the compacted bits.
+///
+/// ## Usage in struct
 /// ```rust
 /// #[derive(serde::Serialize)]
 /// struct MySerdeStructure {

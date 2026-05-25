@@ -1,6 +1,6 @@
 [package]
 name = "mixedradix"
-version = "1.0.0-pre+3"
+version = "1.0.0-rc+3"
 edition = "2024"
 license = "Apache-2.0"
 repository = "https://github.com/savmlang/mixedradix"
@@ -9,7 +9,7 @@ authors = ["Akshanabha Chakraborty <ahqsecret@gmail.com> (@ahqsoftwares)"]
 description = "MixedRadix arithmatic made simpler"
 
 [dependencies]
-mixedradix_macros = { version = "=1.0.0-pre+3", path = "./macros" }
+mixedradix_macros = { version = "=1.0.0-rc+3", path = "./macros" }
 serde = { version = "^1", default-features = true, optional = true }
 
 [package.metadata.docs.rs]

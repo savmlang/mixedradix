@@ -4,26 +4,26 @@ mixedradix! {
   #[bits(5)]
   #[derive(Debug, Clone, Copy, PartialEq, Eq)]
   pub struct Controller {
-    pub field button_a: 2, // 0 or 1 (2 states)
-    pub field joy_x: 3,    // 0, 1, or 2 (3 states)
-    pub field joy_y: 5,    // 0 to 4 (5 states)
+    pub button_a: 2, // 0 or 1 (2 states)
+    pub joy_x: 3,    // 0, 1, or 2 (3 states)
+    pub joy_y: 5,    // 0 to 4 (5 states)
   }
 
   #[bits(64)]
   #[derive(Debug, Clone, Copy, PartialEq, Eq)]
   pub struct Controller2 {
-    pub field a: 4294967296,
-    pub field b: 2147483648,
-    pub field c: 2,
+    pub a: 4294967296,
+    pub b: 2147483648,
+    pub c: 2,
   }
 
   #[bits(64)]
   #[derive(Debug, Clone, Copy, PartialEq, Eq)]
   pub struct Max64BitPack {
-    pub field a: 65536, // States: 2^16 (0..=65535) -> Fits in u16
-    pub field b: 65536, // States: 2^16
-    pub field c: 65536, // States: 2^16
-    pub field d: 65536, // States: 2^16
+    pub a: 65536, // States: 2^16 (0..=65535) -> Fits in u16
+    pub b: 65536, // States: 2^16
+    pub c: 65536, // States: 2^16
+    pub d: 65536, // States: 2^16
   }
 }
 

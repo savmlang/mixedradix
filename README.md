@@ -17,9 +17,9 @@ mixedradix::mixedradix! {
   pub struct Controller {
     // Define your fields with
     // <visbility> field <field_name>: <total_possible_states>
-    pub field button_a: 2, // 0 or 1 (2 states)
-    pub field joy_x: 3,    // 0, 1, or 2 (3 states)
-    pub field joy_y: 5,    // 0 to 4 (5 states)
+    pub button_a: 2, // 0 or 1 (2 states)
+    pub joy_x: 3,    // 0, 1, or 2 (3 states)
+    pub joy_y: 5,    // 0 to 4 (5 states)
   }
 }
 ```
