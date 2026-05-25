@@ -1,0 +1,17 @@
+[package]
+name = "mixedradix_macros"
+version = "1.0.0-rc+1"
+edition = "2024"
+license = "Apache-2.0"
+repository = "https://github.com/savmlang/mixedradix"
+homepage = "https://github.com/savmlang/mixedradix?tab=readme-ov-file"
+authors = ["Akshanabha Chakraborty <ahqsecret@gmail.com> (@ahqsoftwares)"]
+description = "Macros to generate MixedRadix arithmatic"
+
+[lib]
+proc-macro = true
+
+[dependencies]
+proc-macro2 = "^1"
+quote = "^1"
+syn = "^2"
