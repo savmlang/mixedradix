@@ -1,5 +1,13 @@
 #![no_std]
 
+//! # Mixed Radix
+//!
+//! This crate heavily simplifies the process of Mixed Radix Crate Generation
+//!
+//! This crate provides two things
+//! 1. `mixedradix!` macro
+//! 2. `Compact<T>` Container for serde
+
 #[cfg(feature = "serde")]
 use core::{
   convert::From,
@@ -37,6 +45,7 @@ where
 }
 
 #[cfg(feature = "serde")]
+#[cfg_attr(docsrs, doc(cfg(feature = "serde")))]
 #[repr(transparent)]
 /// This structure implements [serde::Serialize] for anything that implements [MixedRadixStructure]
 ///
@@ -50,6 +59,7 @@ where
 pub struct Compact<T: MixedRadixStructure>(pub T);
 
 #[cfg(feature = "serde")]
+#[cfg_attr(docsrs, doc(cfg(feature = "serde")))]
 impl<T: MixedRadixStructure> Deref for Compact<T> {
   type Target = T;
 
@@ -58,12 +68,14 @@ impl<T: MixedRadixStructure> Deref for Compact<T> {
   }
 }
 #[cfg(feature = "serde")]
+#[cfg_attr(docsrs, doc(cfg(feature = "serde")))]
 impl<T: MixedRadixStructure> DerefMut for Compact<T> {
   fn deref_mut(&mut self) -> &mut Self::Target {
     &mut self.0
   }
 }
 #[cfg(feature = "serde")]
+#[cfg_attr(docsrs, doc(cfg(feature = "serde")))]
 impl<T: MixedRadixStructure> From<T> for Compact<T> {
   #[inline]
   fn from(value: T) -> Self {
@@ -71,6 +83,7 @@ impl<T: MixedRadixStructure> From<T> for Compact<T> {
   }
 }
 #[cfg(feature = "serde")]
+#[cfg_attr(docsrs, doc(cfg(feature = "serde")))]
 impl<T: MixedRadixStructure> Compact<T> {
   /// Extract the inner mixed-radix structure.
   #[inline]
@@ -80,6 +93,7 @@ impl<T: MixedRadixStructure> Compact<T> {
 }
 
 #[cfg(feature = "serde")]
+#[cfg_attr(docsrs, doc(cfg(feature = "serde")))]
 impl<T: MixedRadixStructure> Serialize for Compact<T>
 where
   T::BitsType: Serialize,
@@ -96,6 +110,7 @@ where
   }
 }
 #[cfg(feature = "serde")]
+#[cfg_attr(docsrs, doc(cfg(feature = "serde")))]
 impl<'de, T: MixedRadixStructure> Deserialize<'de> for Compact<T>
 where
   T::BitsType: Deserialize<'de>,

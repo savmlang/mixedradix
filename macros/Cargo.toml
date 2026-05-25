@@ -1,6 +1,6 @@
 [package]
 name = "mixedradix_macros"
-version = "1.0.0-rc+1"
+version = "1.0.0-prerelease+2"
 edition = "2024"
 license = "Apache-2.0"
 repository = "https://github.com/savmlang/mixedradix"
