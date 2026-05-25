@@ -38,7 +38,7 @@ impl Parse for MultipleMRI {
 ///
 /// # Implements
 ///
-/// Th
+/// The implementation implements [mixedradix::MixedRadixStructure]
 ///
 /// ## States Formula
 /// To get the number of states for a `#[bits(N)]`
