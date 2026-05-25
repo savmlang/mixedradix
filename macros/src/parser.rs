@@ -165,7 +165,7 @@ impl Parse for MixedRadixInfo {
       if x.path().is_ident("bits") {
         if bits.is_ok() {
           bits = Err(Error::new(
-            x.span(),
+            input.span(),
             "Multiple #[bits] argument were found!",
           ));
         }
@@ -270,7 +270,7 @@ impl Parse for RadixField {
       1 => {
         return Err(Error::new(
           totalstates.span(),
-          "Single state is not allowed",
+          "Single state is not allowed.",
         ));
       }
       2..=256 => quote! { u8 },
