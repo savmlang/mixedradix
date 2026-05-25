@@ -16,10 +16,12 @@ mixedradix::mixedradix! {
   #[my_attr(...)]
   pub struct Controller {
     // Define your fields with
-    // <visbility> field <field_name>: <total_possible_states>
-    pub button_a: 2, // 0 or 1 (2 states)
-    pub joy_x: 3,    // 0, 1, or 2 (3 states)
-    pub joy_y: 5,    // 0 to 4 (5 states)
+    // <visbility?> field <field_name>: <total_possible_states>
+
+    pub button_a: 2,    // 0 or 1 (2 states)
+    #[allow(dead_code)] //<-- Attributes on fields work too
+    pub joy_x: 3,       // 0, 1, or 2 (3 states)
+    joy_y: 5,           // 0 to 4 (5 states)
   }
 }
 ```
