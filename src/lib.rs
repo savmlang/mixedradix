@@ -1,31 +1,113 @@
-use proc_macro::TokenStream as StdTokenStream;
-use quote::quote;
-use syn::{parse::Parse, parse_macro_input};
+#![no_std]
 
-use crate::parser::MixedRadixInfo;
+#[cfg(feature = "serde")]
+use core::{
+  convert::From,
+  ops::{Deref, DerefMut},
+};
+#[cfg(feature = "serde")]
+use serde::{Deserialize, Deserializer, Serialize};
 
-mod parser;
+pub use mixedradix_macros::*;
 
-struct MultipleMRI(Vec<MixedRadixInfo>);
+pub trait MixedRadixStructure
+where
+  Self: Sized,
+{
+  type BitsType;
 
-impl Parse for MultipleMRI {
-  fn parse(input: syn::parse::ParseStream) -> syn::Result<Self> {
-    let mut infos = Vec::new();
+  const STORAGE_BITS: u8;
+  const MAXIMUM_VALUE: Self::BitsType;
 
-    while !input.is_empty() {
-      infos.push(input.parse()?);
-    }
+  /// # Panic
+  /// This function panics on **DEBUG MODE ONLY** due to overflow of fields.
+  fn bits(&self) -> Self::BitsType;
 
-    Ok(Self(infos))
+  /// # None
+  /// This returns `None` only in the case of overflow of its fields
+  fn try_bits(&self) -> Option<Self::BitsType>;
+
+  /// # Panic
+  /// This function panics on **DEBUG MODE ONLY** in case of overflow of "total" from the hypothetical maximum value
+  fn from_bits(total: Self::BitsType) -> Self;
+
+  /// # None
+  /// This returns `None` only in the case of overflow of "total" from the hypothetical maximum value
+  fn try_from_bits(total: Self::BitsType) -> Option<Self>;
+}
+
+#[cfg(feature = "serde")]
+#[repr(transparent)]
+/// This structure implements [serde::Serialize] for anything that implements [MixedRadixStructure]
+///
+/// Usage in struct
+/// ```rust
+/// #[derive(serde::Serialize)]
+/// struct MySerdeStructure {
+///   my_compact_structure: Compact<MyStructure>
+/// }
+/// ```
+pub struct Compact<T: MixedRadixStructure>(pub T);
+
+#[cfg(feature = "serde")]
+impl<T: MixedRadixStructure> Deref for Compact<T> {
+  type Target = T;
+
+  fn deref(&self) -> &Self::Target {
+    &self.0
+  }
+}
+#[cfg(feature = "serde")]
+impl<T: MixedRadixStructure> DerefMut for Compact<T> {
+  fn deref_mut(&mut self) -> &mut Self::Target {
+    &mut self.0
+  }
+}
+#[cfg(feature = "serde")]
+impl<T: MixedRadixStructure> From<T> for Compact<T> {
+  #[inline]
+  fn from(value: T) -> Self {
+    Compact(value)
+  }
+}
+#[cfg(feature = "serde")]
+impl<T: MixedRadixStructure> Compact<T> {
+  /// Extract the inner mixed-radix structure.
+  #[inline]
+  pub fn into_inner(self) -> T {
+    self.0
   }
 }
 
-#[proc_macro]
-pub fn mixedradix(input: StdTokenStream) -> StdTokenStream {
-  let parsed = parse_macro_input!(input as MultipleMRI).0;
-
-  quote! {
-    #(#parsed)*
+#[cfg(feature = "serde")]
+impl<T: MixedRadixStructure> Serialize for Compact<T>
+where
+  T::BitsType: Serialize,
+{
+  fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+  where
+    S: serde::Serializer,
+  {
+    let data = self
+      .0
+      .try_bits()
+      .ok_or_else(|| serde::ser::Error::custom("invalid mixed-radix value : bit overflowed"))?;
+    Serialize::serialize(&data, serializer)
   }
-  .into()
+}
+#[cfg(feature = "serde")]
+impl<'de, T: MixedRadixStructure> Deserialize<'de> for Compact<T>
+where
+  T::BitsType: Deserialize<'de>,
+{
+  fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+  where
+    D: Deserializer<'de>,
+  {
+    let bits = T::BitsType::deserialize(deserializer)?;
+
+    T::try_from_bits(bits)
+      .map(Compact)
+      .ok_or_else(|| serde::de::Error::custom("invalid mixed-radix value: bit overflow"))
+  }
 }

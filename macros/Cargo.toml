@@ -1,17 +1,17 @@
 [package]
-name = "mixedradix"
+name = "mixedradix_macros"
 version = "1.0.0-rc+1"
 edition = "2024"
 license = "Apache-2.0"
 repository = "https://github.com/savmlang/mixedradix"
 homepage = "https://github.com/savmlang/mixedradix?tab=readme-ov-file"
 authors = ["Akshanabha Chakraborty <ahqsecret@gmail.com> (@ahqsoftwares)"]
-description = "MixedRadix arithmatic made simpler"
+description = "Please directly use the `mixedradix` crate"
+
+[lib]
+proc-macro = true
 
 [dependencies]
-mixedradix_macros = { version = "=1.0.0-rc+1", path = "./macros" }
-serde = { version = "^1", default-features = true, optional = true }
-
-[features]
-default = []
-serde = ["dep:serde"]
+proc-macro2 = "^1"
+quote = "^1"
+syn = "^2"

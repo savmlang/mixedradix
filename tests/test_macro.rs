@@ -1,4 +1,4 @@
-use mixedradix_macros::mixedradix;
+use mixedradix::{MixedRadixStructure, mixedradix};
 
 mixedradix! {
   #[bits(5)]
@@ -35,9 +35,9 @@ fn test_u32_u31_u1() {
     c: 1,
   };
 
-  let packed: u64 = state.serialize();
+  let packed: u64 = state.bits();
 
-  let unpacked = Controller2::deserialize(packed);
+  let unpacked = Controller2::from_bits(packed);
   assert_eq!(state, unpacked);
 }
 
@@ -50,9 +50,9 @@ fn test_generic_u64() {
     d: 65535,
   };
 
-  let packed: u64 = state.serialize();
+  let packed: u64 = state.bits();
 
-  let unpacked = Max64BitPack::deserialize(packed);
+  let unpacked = Max64BitPack::from_bits(packed);
   assert_eq!(state, unpacked);
 }
 
@@ -64,9 +64,9 @@ fn test_zero_values() {
     joy_y: 0,
   };
 
-  let packed = state.serialize();
+  let packed = state.bits();
   assert_eq!(packed, 0);
 
-  let unpacked = Controller::deserialize(packed);
+  let unpacked = Controller::from_bits(packed);
   assert_eq!(state, unpacked);
 }

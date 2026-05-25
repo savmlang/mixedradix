@@ -92,13 +92,13 @@ impl ToTokens for MixedRadixInfo {
         #(#fields),*
       }
 
-      impl #name {
-        #vis const STORAGE_BITS: u8 = #bits;
-        #vis const MAXIMUM_VALUE: #bitstype = #max_value as #bitstype;
+      impl mixedradix::MixedRadixStructure for #name {
+        type BitsType = #bitstype;
 
-        /// # Panic
-        /// This function panics on **DEBUG MODE ONLY** due to overflow of fields.
-        #vis const fn serialize(&self) -> #bitstype {
+        const STORAGE_BITS: u8 = #bits;
+        const MAXIMUM_VALUE: #bitstype = #max_value as #bitstype;
+
+        fn bits(&self) -> #bitstype {
           let mut total: #bitstype = 0;
 
           #(#ser)*
@@ -106,9 +106,7 @@ impl ToTokens for MixedRadixInfo {
           total
         }
 
-        /// # None
-        /// This returns `None` only in the case of overflow of its fields
-        #vis const fn try_serialize(&self) -> Option<#bitstype> {
+        fn try_bits(&self) -> Option<#bitstype> {
           let mut total: #bitstype = 0;
 
           #(#ser2)*
@@ -116,9 +114,7 @@ impl ToTokens for MixedRadixInfo {
           Some(total)
         }
 
-        /// # Panic
-        /// This function panics on **DEBUG MODE ONLY** in case of overflow of "total" from the hypothetical maximum value
-        #vis const fn deserialize(mut total: #bitstype) -> Self {
+        fn from_bits(mut total: #bitstype) -> Self {
           debug_assert!(total <= (#max_value as _), "Overflow has been detected. Please ensure your total is not corrupted.");
           #(#de)*
 
@@ -127,9 +123,7 @@ impl ToTokens for MixedRadixInfo {
           }
         }
 
-        /// # None
-        /// This returns `None` only in the case of overflow of "total" from the hypothetical maximum value
-        #vis const fn try_deserialize(mut total: #bitstype) -> Option<Self> {
+        fn try_from_bits(mut total: #bitstype) -> Option<Self> {
           if total > (#max_value as _) {
             return None;
           }
