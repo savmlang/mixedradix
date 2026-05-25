@@ -114,7 +114,7 @@ impl ToTokens for MixedRadixInfo {
           Some(total)
         }
 
-        fn from_bits(mut total: #bitstype) -> Self {
+        fn from_bits(total: #bitstype) -> Self {
           debug_assert!(total <= (#max_value as _), "Overflow has been detected. Please ensure your total is not corrupted.");
           #(#de)*
 
@@ -123,7 +123,7 @@ impl ToTokens for MixedRadixInfo {
           }
         }
 
-        fn try_from_bits(mut total: #bitstype) -> Option<Self> {
+        fn try_from_bits(total: #bitstype) -> Option<Self> {
           if total > (#max_value as _) {
             return None;
           }
